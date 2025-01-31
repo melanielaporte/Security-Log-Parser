@@ -1,6 +1,6 @@
 <h1 align="center">Security Log Parser</h1> 
 
-Thi tool will analyze system logs (e.g., Linux auth logs, web server logs) and detect common security threats like failed SSH login attempts, brute-force attacks, and unusual access patterns.
+Analyze system logs (e.g., Linux auth logs, web server logs) and detect common security threats like failed SSH login attempts, brute-force attacks, and unusual access patterns.
 
 ## Features:
 - Parses log files for security-related events
@@ -15,6 +15,8 @@ Thi tool will analyze system logs (e.g., Linux auth logs, web server logs) and d
 - IP Geolocation API (to get the origin of suspicious IPs)
  
 ## UI:
+![Screenshot Capture - 2025-01-31 - 17-20-40](https://github.com/user-attachments/assets/abab9aa8-47f1-4bb8-b041-d029e6b9a928)
+
 
 
 
