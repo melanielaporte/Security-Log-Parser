@@ -1,45 +1,24 @@
-from flask import Flask, render_template, request
 import re
-from collections import defaultdict
-import os
+from collections import Counter
 
-app = Flask(__name__)
-UPLOAD_FOLDER = 'uploads'
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+# Sample log file (Replace with actual path)
+log_file_path = "sample_log.txt"
 
-# Function to parse log file and detect failed login attempts
+# Regular expression pattern to match failed login attempts and extract IP addresses
+failed_login_pattern = r"Failed password for .* from (\d+\.\d+\.\d+\.\d+)"
+
 def parse_log(file_path):
-    failed_attempts = defaultdict(int)
-    suspicious_ips = set()
-    
-    with open(file_path, 'r') as file:
-        for line in file:
-            match = re.search(r'Failed password for .* from (\d+\.\d+\.\d+\.\d+)', line)
-            if match:
-                ip = match.group(1)
-                failed_attempts[ip] += 1
-                if failed_attempts[ip] > 5:
-                    suspicious_ips.add(ip)
-    
-    return failed_attempts, suspicious_ips
+    with open(file_path, "r") as file:
+        log_data = file.readlines()
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    results = []
-    suspicious = []
-    
-    if request.method == 'POST':
-        file = request.files['logfile']
-        if file:
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-            file.save(file_path)
-            failed_attempts, suspicious_ips = parse_log(file_path)
-            
-            results = [{'ip': ip, 'attempts': failed_attempts[ip]} for ip in failed_attempts]
-            suspicious = list(suspicious_ips)
-    
-    return render_template('index.html', results=results, suspicious=suspicious)
+    failed_attempts = [re.search(failed_login_pattern, line) for line in log_data]
+    failed_ips = [match.group(1) for match in failed_attempts if match]
 
-if __name__ == '__main__':
-    app.run(debug=True)
+    ip_counts = Counter(failed_ips)
+    
+    print("\nFailed Login Attempts by IP:")
+    for ip, count in ip_counts.items():
+        print(f"{ip}: {count} times")
+
+# Run the parser
+parse_log(log_file_path)
