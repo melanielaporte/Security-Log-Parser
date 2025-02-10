@@ -22,3 +22,4 @@ def parse_log(file_path):
 
 # Run the parser
 parse_log(log_file_path)
+
